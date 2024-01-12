@@ -1,4 +1,4 @@
-const express = require("express");
+const express = require("express")
 const mongoose = require("mongoose");
 require("dotenv").config();
 const app = express();
@@ -6,13 +6,14 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
 
-const PORT = process.env.PORT || 8001;
+
+const PORT = process.env.PORT || 3000;
 
 app.use(morgan("dev"));
 app.use(cors());
 app.use(bodyParser.json());
 
-const URL = process.env.MONGODB_URL; 
+const URL = process.env.MONGODB_URL;
 
 mongoose.connect(URL);
 
@@ -21,6 +22,15 @@ connection.once("open", () => {
   console.log("MongoDB Connection Success! 🚀");
 });
 
+app.use(express.json());
+
+const userRoutes = require("./routes/userRoutes");
+app.use("/api/user", userRoutes);
+const authRoutes = require("./routes/authRoute");
+app.use("/api/auth", authRoutes);
+
+
 app.listen(PORT, () => {
   console.log(`Server is up and running on port number: ${PORT}`);
 });
+
