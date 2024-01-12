@@ -86,7 +86,7 @@ const google = async (req, res, next) => {
       });
 
       await newUser.save();
-      
+
       const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET);
 
       const { password: hashedPassword2, ...rest } = newUser._doc;
