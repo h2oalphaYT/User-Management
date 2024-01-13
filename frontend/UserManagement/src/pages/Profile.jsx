@@ -17,6 +17,7 @@ import {
   deleteUserFailure,
   signOut,
 } from "../redux/user/userSlice";
+import Swal from "sweetalert2";
 
 export default function Profile() {
   const dispatch = useDispatch();
@@ -33,7 +34,7 @@ export default function Profile() {
       handleFileUpload(image);
     }
   }, [image]);
-  
+
   const handleFileUpload = async (image) => {
     const storage = getStorage(app);
     const fileName = new Date().getTime() + image.name;
@@ -47,6 +48,7 @@ export default function Profile() {
         setImagePercent(Math.round(progress));
       },
       (error) => {
+        console.log(error);
         setImageError(true);
       },
       () => {
@@ -85,20 +87,53 @@ export default function Profile() {
 
   const handleDeleteAccount = async () => {
     try {
-      dispatch(deleteUserStart());
-      const res = await fetch(`/api/user/delete/${currentUser._id}`, {
-        method: "DELETE",
+      const result = await Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!",
       });
-      const data = await res.json();
-      if (data.success === false) {
-        dispatch(deleteUserFailure(data));
-        return;
+  
+      if (result.isConfirmed) {
+        dispatch(deleteUserStart());
+  
+        const res = await fetch(`/api/user/delete/${currentUser._id}`, {
+          method: "DELETE",
+        });
+  
+        const data = await res.json();
+  
+        if (data.success === false) {
+          dispatch(deleteUserFailure(data));
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Something went wrong!",
+          });
+          return;
+        }
+  
+        dispatch(deleteUserSuccess(data));
+  
+        Swal.fire({
+          icon: "success",
+          title: "Deleted!",
+          text: "Your account has been deleted.",
+        });
       }
-      dispatch(deleteUserSuccess(data));
     } catch (error) {
       dispatch(deleteUserFailure(error));
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Something went wrong!",
+      });
     }
   };
+  
 
   const handleSignOut = async () => {
     try {
@@ -148,22 +183,30 @@ export default function Profile() {
         <input
           defaultValue={currentUser.FirstName}
           type="text"
-          id="username"
+          id="FirstName"
           placeholder="Username"
+          className="bg-slate-100 rounded-lg p-3"
+          onChange={handleChange}
+        />
+        <input
+          defaultValue={currentUser.LastName}
+          type="text"
+          id="LastName"
+          placeholder="Lasr Name"
           className="bg-slate-100 rounded-lg p-3"
           onChange={handleChange}
         />
         <input
           defaultValue={currentUser.Email}
           type="email"
-          id="email"
+          id="Email"
           placeholder="Email"
           className="bg-slate-100 rounded-lg p-3"
           onChange={handleChange}
         />
         <input
           type="password"
-          id="password"
+          id="Password"
           placeholder="Password"
           className="bg-slate-100 rounded-lg p-3"
           onChange={handleChange}

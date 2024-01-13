@@ -5,6 +5,8 @@ const app = express();
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
+const cookieParser = require("cookie-parser");
+
 
 
 const PORT = process.env.PORT || 3000;
@@ -23,6 +25,8 @@ connection.once("open", () => {
 });
 
 app.use(express.json());
+
+app.use(cookieParser());
 
 const userRoutes = require("./routes/userRoutes");
 app.use("/api/user", userRoutes);
