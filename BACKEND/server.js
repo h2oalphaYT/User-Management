@@ -10,19 +10,21 @@ const path = require("path");
 const PORT = process.env.PORT || 3000;
 const app = express();
 
-
 app.use(morgan("dev"));
 app.use(cors());
 app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname, 'frontend/UserManagement/dist')));
+app.use(express.static(path.join(__dirname, "frontend/UserManagement/dist")));
 
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'frontend', 'UserManagement', 'dist', 'index.html'));
+app.get("*", (req, res) => {
+  res.sendFile(
+    path.join(__dirname, "frontend", "UserManagement", "dist", "index.html")
+  );
 });
 
 const URL = process.env.MONGODB_URL;
 
-mongoose.connect(URL, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose
+  .connect(URL, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
     console.log("MongoDB Connection Success! 🚀");
   })
