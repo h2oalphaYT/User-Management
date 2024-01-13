@@ -14,7 +14,7 @@
   "scripts": {
     "dev": "node server.js",
     "start": "nodemon server.js",
-    "build": "npm install && npm install --prefix UserManagement && npm run build --prefix UserManagement"
+    "build": "npm install && npm install --prefix usermanagement && npm run build --prefix usermanagement"
   },
   "name": "backend",
   "version": "1.0.0",
