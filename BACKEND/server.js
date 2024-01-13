@@ -8,32 +8,29 @@ const cookieParser = require("cookie-parser");
 const path = require("path");
 
 const PORT = process.env.PORT || 3000;
-
 const app = express();
-// const __dirname =path.resolve();
+
 
 app.use(morgan("dev"));
 app.use(cors());
 app.use(bodyParser.json());
-
-
 app.use(express.static(path.join(__dirname, 'frontend/UserManagement/dist')));
 
-app.get('*' , (req,res) => {
-  res.sendFile(path.join(__dirname ,'frontend', 'UserManagement' ,'dist' ,'index.html'))
-})
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'frontend', 'UserManagement', 'dist', 'index.html'));
+});
 
 const URL = process.env.MONGODB_URL;
 
-mongoose.connect(URL);
-
-const connection = mongoose.connection;
-connection.once("open", () => {
-  console.log("MongoDB Connection Success! 🚀");
-});
+mongoose.connect(URL, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => {
+    console.log("MongoDB Connection Success! 🚀");
+  })
+  .catch((error) => {
+    console.error("MongoDB Connection Error:", error);
+  });
 
 app.use(express.json());
-
 app.use(cookieParser());
 
 const userRoutes = require("./routes/userRoutes");
